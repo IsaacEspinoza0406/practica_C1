@@ -36,7 +36,7 @@ export default async function Report1Page({
         <div className="bg-slate-900 p-6 rounded-xl border border-slate-800 mb-8">
             <form className="flex gap-4 items-end">
                 <div className="flex flex-col gap-2">
-                    <label className="text-sm text-slate-400">Periodo (Term)</label>
+                    <label className="text-sm text-slate-400">Periodo</label>
                     <select 
                         name="term" 
                         defaultValue={term}
