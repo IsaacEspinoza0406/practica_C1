@@ -1,9 +1,12 @@
+// src/lib/db.ts
 import { Pool } from 'pg';
 
 const connectionString = process.env.DATABASE_URL;
 
+console.log("intentando conectar con:", connectionString); 
+
 if (!connectionString) {
-  throw new Error('Revise bien sus credenciales en DATABASE_URL en el archivo .env.local');
+  throw new Error('Por favor define DATABASE_URL en tu archivo .env.local');
 }
 
 const pool = new Pool({
