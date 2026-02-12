@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { query } from '@/lib/db';
+import { getRankStudents } from '@/backend/services/reportService';
 import Link from 'next/link';
 
 export default async function Report5Page({
@@ -14,9 +14,8 @@ export default async function Report5Page({
     ? params.program 
     : 'Sistemas';
 
-  const sql = `SELECT * FROM vw_rank_students WHERE program = $1 ORDER BY academic_rank ASC`;
-  const result = await query(sql, [program]);
-  const rows = result.rows;
+  // Aquí se llama el servicio.
+  const rows = await getRankStudents(program);
 
   return (
     <main className="min-h-screen p-8 bg-slate-950 text-white">

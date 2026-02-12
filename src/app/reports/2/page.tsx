@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { query } from '@/lib/db';
+import { getTeacherLoad } from '@/backend/services/reportService'; 
 import Link from 'next/link';
 
 export default async function Report2Page({
@@ -12,16 +12,7 @@ export default async function Report2Page({
   const limit = 5; 
   const offset = (page - 1) * limit;
 
-  const sql = `
-    SELECT * FROM vw_teacher_load 
-    ORDER BY teacher_name ASC
-    LIMIT $1 OFFSET $2
-  `;
-
-  const result = await query(sql, [limit, offset]);
-  const rows = result.rows;
-  const countRes = await query('SELECT COUNT(*) FROM vw_teacher_load');
-  const total = parseInt(countRes.rows[0].count);
+  const { rows, total } = await getTeacherLoad(limit, offset);
   const totalPages = Math.ceil(total / limit);
 
   return (

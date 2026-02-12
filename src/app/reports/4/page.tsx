@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { query } from '@/lib/db';
+import { getAttendanceByGroup } from '@/backend/services/reportService'; 
 import Link from 'next/link';
 
 export default async function Report4Page() {
-  const result = await query('SELECT * FROM vw_attendance_by_group');
-  const rows = result.rows;
+
+  const rows = await getAttendanceByGroup();
 
   return (
     <main className="min-h-screen p-8 bg-slate-950 text-white">

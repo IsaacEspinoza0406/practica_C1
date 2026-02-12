@@ -1,7 +1,6 @@
-// src/backend/services/reportService.ts
 import { query } from '../db'; 
 
-// --- REPORTE 1: Rendimiento ---
+// Reporte 1. Rendimiento.
 export async function getCoursePerformance(term: string) {
   const sql = `
     SELECT * FROM vw_course_performance 
@@ -12,7 +11,7 @@ export async function getCoursePerformance(term: string) {
   return result.rows;
 }
 
-// --- REPORTE 2: Carga Docente ---
+// Reporte 2. Carga Docente.
 export async function getTeacherLoad(limit: number, offset: number) {
   const sql = `
     SELECT * FROM vw_teacher_load 
@@ -21,14 +20,14 @@ export async function getTeacherLoad(limit: number, offset: number) {
   `;
   const result = await query(sql, [limit, offset]);
   
-  // Consulta extra para saber el total de páginas
+  // Calculamos el total de paginas.
   const countRes = await query('SELECT COUNT(*) FROM vw_teacher_load');
   const total = parseInt(countRes.rows[0].count);
 
   return { rows: result.rows, total };
 }
 
-// --- REPORTE 3: Alumnos en Riesgo ---
+// --- Reporte 3. Alumnos en Riesgo.
 export async function getStudentsAtRisk(q: string, limit: number, offset: number) {
   const sql = `
     SELECT * FROM vw_students_at_risk 
@@ -40,13 +39,13 @@ export async function getStudentsAtRisk(q: string, limit: number, offset: number
   return result.rows;
 }
 
-// --- REPORTE 4: Asistencia ---
+// --- Reporte 4. Asistencia.
 export async function getAttendanceByGroup() {
   const result = await query('SELECT * FROM vw_attendance_by_group');
   return result.rows;
 }
 
-// --- REPORTE 5: Ranking ---
+// --- Reporte 5. Ranking.
 export async function getRankStudents(program: string) {
   const sql = `SELECT * FROM vw_rank_students WHERE program = $1 ORDER BY academic_rank ASC`;
   const result = await query(sql, [program]);

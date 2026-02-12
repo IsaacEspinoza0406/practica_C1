@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { query } from '@/lib/db';
+import { getCoursePerformance } from '@/backend/services/reportService'; 
 import Link from 'next/link';
 
 export default async function Report1Page({
@@ -10,15 +10,9 @@ export default async function Report1Page({
   const params = await searchParams; 
   const term = typeof params.term === 'string' ? params.term : '2025-1';
 
-  const sql = `
-    SELECT * FROM vw_course_performance 
-    WHERE term = $1
-    ORDER BY course_name ASC
-  `;
-  
-  const result = await query(sql, [term]);
-  const rows = result.rows;
+  const rows = await getCoursePerformance(term);
 
+  // Cálculo visual.
   const generalAvg = rows.length > 0 
     ? (rows.reduce((acc: number, row: any) => acc + parseFloat(row.average_score), 0) / rows.length).toFixed(2) 
     : "0";
@@ -27,9 +21,7 @@ export default async function Report1Page({
     <main className="min-h-screen p-8 bg-slate-950 text-white">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center gap-4 mb-8">
-            <Link href="/" className="px-4 py-2 bg-slate-800 rounded hover:bg-slate-700 transition">
-                &larr; Volver
-            </Link>
+            <Link href="/" className="px-4 py-2 bg-slate-800 rounded hover:bg-slate-700 transition">&larr; Volver</Link>
             <h1 className="text-3xl font-bold">Rendimiento por Materia</h1>
         </div>
 
@@ -37,18 +29,12 @@ export default async function Report1Page({
             <form className="flex gap-4 items-end">
                 <div className="flex flex-col gap-2">
                     <label className="text-sm text-slate-400">Periodo</label>
-                    <select 
-                        name="term" 
-                        defaultValue={term}
-                        className="bg-slate-800 border border-slate-700 rounded px-4 py-2 text-white"
-                    >
+                    <select name="term" defaultValue={term} className="bg-slate-800 border border-slate-700 rounded px-4 py-2 text-white">
                         <option value="2025-1">2025-1</option>
                         <option value="2025-2">2025-2</option>
                     </select>
                 </div>
-                <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded font-medium transition">
-                    Filtrar
-                </button>
+                <button type="submit" className="px-6 py-2 bg-blue-600 hover:bg-blue-500 rounded font-medium transition">Filtrar</button>
             </form>
         </div>
 

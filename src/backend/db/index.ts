@@ -1,4 +1,3 @@
-// src/lib/db.ts
 import { Pool } from 'pg';
 
 const connectionString = process.env.DATABASE_URL;

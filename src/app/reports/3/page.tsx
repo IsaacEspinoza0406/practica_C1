@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { query } from '@/lib/db';
+import { getStudentsAtRisk } from '@/backend/services/reportService'; 
 import Link from 'next/link';
 
 export default async function Report3Page({
@@ -13,15 +13,7 @@ export default async function Report3Page({
   const limit = 5;
   const offset = (page - 1) * limit;
 
-  const sql = `
-    SELECT * FROM vw_students_at_risk 
-    WHERE name ILIKE $1 OR email ILIKE $1
-    ORDER BY average ASC
-    LIMIT $2 OFFSET $3
-  `;
-
-  const result = await query(sql, [`%${q}%`, limit, offset]);
-  const rows = result.rows;
+  const rows = await getStudentsAtRisk(q, limit, offset);
 
   return (
     <main className="min-h-screen p-8 bg-slate-950 text-white">
