@@ -1,6 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getRankStudents } from '@/backend/services/reportService';
 import Link from 'next/link';
+import { z } from 'zod'; 
+
+const validPrograms = ['Sistemas', 'Industrial', 'Biomedica'] as const;
 
 export default async function Report5Page({
   searchParams,
@@ -9,12 +12,11 @@ export default async function Report5Page({
 }) {
   const params = await searchParams;
   
-  const validPrograms = ['Sistemas', 'Industrial', 'Biomedica'];
-  const program = (typeof params.program === 'string' && validPrograms.includes(params.program)) 
-    ? params.program 
-    : 'Sistemas';
+  const programSchema = z.object({
+    program: z.enum(validPrograms).optional().default('Sistemas')
+  });
 
-  // Aquí se llama el servicio.
+  const { program } = programSchema.parse(params);
   const rows = await getRankStudents(program);
 
   return (

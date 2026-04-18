@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { getStudentsAtRisk } from '@/backend/services/reportService'; 
 import Link from 'next/link';
+import { z } from 'zod'; 
 
 export default async function Report3Page({
   searchParams,
@@ -8,8 +9,15 @@ export default async function Report3Page({
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
   const params = await searchParams;
-  const q = typeof params.q === 'string' ? params.q : ''; 
-  const page = typeof params.page === 'string' ? parseInt(params.page) : 1;
+  
+  const searchSchema = z.object({
+    q: z.string().optional().default(''),
+    page: z.coerce.number().min(1).optional().default(1)
+  });
+
+  // Extraemos las variables ya validadas.
+  const { q, page } = searchSchema.parse(params);
+  
   const limit = 5;
   const offset = (page - 1) * limit;
 

@@ -1,7 +1,6 @@
 --VISTA 1: vw_course_performance
 -- Grain: 1 fila por Curso + Periodo
 -- Requisito: uso el case para calclar la cantidad de reprobados.
--- ---------------------------------------------------------
 CREATE OR REPLACE VIEW vw_course_performance AS
 SELECT 
     c.name AS course_name,
@@ -13,7 +12,8 @@ FROM groups g
 JOIN courses c ON g.course_id = c.id
 JOIN enrollments e ON g.id = e.group_id
 LEFT JOIN grades gr ON e.id = gr.enrollment_id
-GROUP BY c.name, g.term;
+GROUP BY c.name, g.term
+HAVING COUNT(e.id) > 0;
 
 -- VERIFY: SELECT * FROM vw_course_performance;
 
@@ -40,7 +40,7 @@ HAVING COUNT(e.id) > 0;
 
 -- VISTA 3: vw_students_at_risk
 -- Grain: 1 fila por Alumno
--- Requisito: 
+-- Requisito: Uso de CTE  para pre-calcular el promedio antes de filtrar.
 CREATE OR REPLACE VIEW vw_students_at_risk AS
 WITH StudentStats AS (
     SELECT 
@@ -77,8 +77,11 @@ JOIN enrollments e ON g.id = e.group_id
 LEFT JOIN attendance a ON e.id = a.enrollment_id
 GROUP BY c.name, g.term;
 
+-- VERIFY: SELECT * FROM vw_attendance_by_group;
+
 -- VISTA 5: vw_rank_students
 -- Grain: 1 fila por Alumno + Programa
+-- Requisito: Uso de Window Function (RANK) para crear un ranking particionado.
 
 CREATE OR REPLACE VIEW vw_rank_students AS
 SELECT 
@@ -90,3 +93,5 @@ FROM students s
 JOIN enrollments e ON s.id = e.student_id
 JOIN grades gr ON e.id = gr.enrollment_id
 GROUP BY s.program, s.name;
+
+-- VERIFY: SELECT * FROM vw_rank_students;
